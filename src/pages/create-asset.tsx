@@ -4,8 +4,9 @@ import { Formik } from "formik";
 import { trpc } from "../utils/trpc";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { TextField } from "../components/TextField";
 const Createasset: NextPage = () => {
-  const createAsset = trpc.useMutation(["example.createAsset"]);
+  const createAsset = trpc.useMutation(["hyperledger.createAsset"]);
   const router = useRouter();
   return (
     <div className="container mx-auto flex flex-col justifiy-center max-w-screen-md ">
@@ -29,15 +30,18 @@ const Createasset: NextPage = () => {
           AppraisedValue: "",
         }}
         onSubmit={(values) => {
-          createAsset.mutate({ ID: "asdsad", ...values });
-          if (createAsset.isSuccess) {
-            router.push("/");
-          }
+          createAsset.mutate(
+            { ID: "asset" + Date.now(), ...values },
+            {
+              onSuccess() {
+                router.push("/");
+              },
+            }
+          );
         }}
       >
         {({ values, handleChange, handleSubmit, isSubmitting }) => (
           <form onSubmit={handleSubmit}>
-            <div></div>
             <TextField
               onChange={handleChange}
               name="Color"
@@ -68,30 +72,8 @@ const Createasset: NextPage = () => {
           </form>
         )}
       </Formik>
-    </div>
-  );
-};
 
-interface TextFieldProps {
-  name: string;
-  value: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-}
-
-const TextField = ({ name, value, onChange }: TextFieldProps) => {
-  return (
-    <div>
-      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-        {name}
-      </label>
-      <input
-        type="text"
-        value={value}
-        onChange={onChange}
-        name={name}
-        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder={name}
-      ></input>
+      {createAsset.isSuccess ? "Asset Added" : ""}
     </div>
   );
 };

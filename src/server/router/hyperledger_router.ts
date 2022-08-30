@@ -10,7 +10,7 @@ import {
   updateAsset,
 } from "../../utils/ledgerfunctions";
 
-export const exampleRouter = createRouter()
+export const ledgerRouter = createRouter()
   .query("hello", {
     input: z
       .object({
